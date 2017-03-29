@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LostAndFound.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,6 +20,18 @@ namespace LostAndFound.Web.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public ActionResult ReportLostItem()
+        {
+            LostItemReportVM vm = new LostItemReportVM();
+            return View(vm);
+        }
+
+        [HttpPost]
+        public ActionResult ReportLostItem(LostItemReportVM vm)
+        {           
+            return View(vm);
         }
     }
 }

@@ -43,6 +43,8 @@ namespace LostAndFound.Data.Entities
         
         public AppUser CaseClosedBy { get; set; }
 
+        public AppUser RecordEnteredBy { get; set; }
+
         public LostItem()
         {
             DateCreatedUTC = DateTime.UtcNow;

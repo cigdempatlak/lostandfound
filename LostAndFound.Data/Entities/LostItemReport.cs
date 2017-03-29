@@ -43,6 +43,10 @@ namespace LostAndFound.Data.Entities
         public string Phone { get; set; }
         public DateTime LostDateTimeUTC { get; set; }
 
+        public AppUser RecordEnteredBy { get; set; }
+
+
+
         [Required]
         public string IPAdress { get; set; }
 
