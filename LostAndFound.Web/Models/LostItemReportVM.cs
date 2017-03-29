@@ -15,7 +15,13 @@ namespace LostAndFound.Web.Models
 
         [MaxLength(2048)]
         [Required]
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
+
+        [Required]
+        [Display(Name ="Lost Date")]
+        [DataType(DataType.Date)]
+        public DateTime LostDateTime{ get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -29,7 +35,13 @@ namespace LostAndFound.Web.Models
        
         [Required]
         [Display(Name ="Location Lost")]
-        public string LostLocation { get; set; }
+        public List<LostLocation> Location { get; set; }
+        public Guid SelectedLocationID { get; set; }
+
+        [Required]
+        [Display(Name = "Item Type")]
+        public List<LostItemType> ItemType { get; set; }
+        public Guid SelectedItemType { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -38,6 +50,23 @@ namespace LostAndFound.Web.Models
 
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
+        
+        public LostItemReportVM()
+        {
+            Location = new List<LostLocation>();
+            ItemType = new List<LostItemType>();
+        }
+    }
 
+    public class LostLocation
+    {
+        public Guid Key { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class LostItemType
+    {
+        public Guid Key { get; set; }
+        public string Name { get; set; }
     }
 }

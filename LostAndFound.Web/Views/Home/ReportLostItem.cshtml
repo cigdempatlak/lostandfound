@@ -1,10 +1,10 @@
 ﻿@model LostAndFound.Web.Models.LostItemReportVM
 
 @{
-    ViewBag.Title = "ReportLostItem";
+    ViewBag.Title = "Lost And Found - Report Lost Item";
 }
 
-<h2>ReportLostItem</h2>
+<h2>Report Lost Item</h2>
 
 
 @using (Html.BeginForm()) 
@@ -12,7 +12,8 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>LostItemReportVM</h4>
+        <p>If you’ve lost something, please report it using our form below.  Please be detailed in describing the item you have lost so we can tell your keys, for example, from the 30 other sets of keys turned in each month. Details that are helpful include: brand name, color, size, shape, model number, quantity, material (leather, plastic, fabric, metal, etc.), size, special features, tags or labels, etc.</p>
+
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -24,10 +25,29 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.ItemType, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.SelectedItemType,
+                                         new SelectList(Model.ItemType, "Key", "Name"),
+                                         "- Please Select -",
+                                         new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ItemType, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LostDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LostDateTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.LostDateTime, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -48,10 +68,13 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.LostLocation, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Location, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.LostLocation, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.LostLocation, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(model => model.SelectedLocationID,
+                                         new SelectList(Model.Location, "Key", "Name"),
+                                         "- Please Select -",
+                                         new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -79,10 +102,9 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+

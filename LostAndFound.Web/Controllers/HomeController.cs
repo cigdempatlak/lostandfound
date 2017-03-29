@@ -1,4 +1,5 @@
-﻿using LostAndFound.Web.Models;
+﻿using LostAndFound.Data.Entities;
+using LostAndFound.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,13 +26,54 @@ namespace LostAndFound.Web.Controllers
         public ActionResult ReportLostItem()
         {
             LostItemReportVM vm = new LostItemReportVM();
+
+            AppDbContext db = new AppDbContext();
+            vm.Location = db.Locations.Where(c => c.Active == true).OrderBy(c => c.Name).
+                                  Select(c => new LostLocation { Key = c.LocationId, Name = c.Name }).ToList();
+            vm.ItemType = db.TypeOfItems.Where(c => c.Active == true).OrderBy(c => c.Name).
+                            Select(c => new LostItemType { Key = c.TypeOfItemId, Name = c.Name }).ToList();
+
             return View(vm);
         }
 
+        [ValidateAntiForgeryToken]  
         [HttpPost]
         public ActionResult ReportLostItem(LostItemReportVM vm)
-        {           
-            return View(vm);
+        {
+            AppDbContext db = new AppDbContext();
+
+            if (!ModelState.IsValid)
+            {
+                vm.Location = db.Locations.Where(c => c.Active == true).OrderBy(c=>c.Name).
+                                  Select(c => new LostLocation { Key = c.LocationId, Name = c.Name }).ToList();
+                vm.ItemType = db.TypeOfItems.Where(c => c.Active == true).OrderBy(c=>c.Name).
+                                Select(c => new LostItemType { Key = c.TypeOfItemId, Name = c.Name }).ToList();
+                return View(vm);
+            }
+            
+            //for now lets add all items by sysadmin
+            AppUser sysAdmin = db.Users.SingleOrDefault(c => c.Email == "lostandfoundapp@devign34.com");
+
+            LostItemReport lostItem = new LostItemReport();
+            lostItem.Active = true;
+            lostItem.DateCreatedUTC = DateTime.UtcNow;
+            lostItem.Description = vm.Description;
+            lostItem.Email = vm.Email;
+            lostItem.FirstName = vm.FirstName;
+            lostItem.IPAdress = Request.UserHostAddress;
+            lostItem.ItemName = vm.ItemName;
+            lostItem.LastName = vm.LastName;
+            lostItem.LostDateTimeUTC = vm.LostDateTime.ToUniversalTime();
+            lostItem.LostReportItemId = Guid.NewGuid();
+            lostItem.Phone = vm.Phone;
+            lostItem.RecordEnteredBy = sysAdmin;
+            lostItem.LostLocation = db.Locations.Single(c => c.LocationId == vm.SelectedLocationID);
+            lostItem.LostItemType = db.TypeOfItems.Single(c => c.TypeOfItemId == vm.SelectedItemType);
+
+            db.LostItemReports.Add(lostItem);
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
         }
     }
 }
