@@ -7,13 +7,13 @@ namespace LostAndFound.Web.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class RecordsaddBy : IMigrationMetadata
+    public sealed partial class foundadateinUTCisnullable : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RecordsaddBy));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(foundadateinUTCisnullable));
         
         string IMigrationMetadata.Id
         {
-            get { return "201703251605569_RecordsaddBy"; }
+            get { return "201703300046178_foundadateinUTC is nullable"; }
         }
         
         string IMigrationMetadata.Source

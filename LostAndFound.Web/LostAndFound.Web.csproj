@@ -190,13 +190,22 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201703251605569_RecordsaddBy.cs" />
-    <Compile Include="Migrations\201703251605569_RecordsaddBy.Designer.cs">
-      <DependentUpon>201703251605569_RecordsaddBy.cs</DependentUpon>
+    <Compile Include="Migrations\201703292337199_removingtable.cs" />
+    <Compile Include="Migrations\201703292337199_removingtable.Designer.cs">
+      <DependentUpon>201703292337199_removingtable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703300046178_foundadateinUTC is nullable.cs" />
+    <Compile Include="Migrations\201703300046178_foundadateinUTC is nullable.Designer.cs">
+      <DependentUpon>201703300046178_foundadateinUTC is nullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703300058438_norequired for lostdatetime.cs" />
+    <Compile Include="Migrations\201703300058438_norequired for lostdatetime.Designer.cs">
+      <DependentUpon>201703300058438_norequired for lostdatetime.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ListLostReportItemVM.cs" />
     <Compile Include="Models\LostItemReportVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -210,6 +219,7 @@
     <Content Include="Content\bootstrap-datepicker3.min.css" />
     <Content Include="Content\bootstrap-datepicker3.standalone.css" />
     <Content Include="Content\bootstrap-datepicker3.standalone.min.css" />
+    <Content Include="Content\bootstrap-sortable.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -237,6 +247,7 @@
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\bootstrap-sortable.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
@@ -315,6 +326,10 @@
     <Content Include="Scripts\locales\bootstrap-datepicker.zh-CN.min.js" />
     <Content Include="Scripts\locales\bootstrap-datepicker.zh-TW.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment-with-langs.js" />
+    <Content Include="Scripts\moment-with-langs.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
@@ -332,7 +347,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -354,6 +368,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\ReportLostItem.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -371,8 +386,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201703251605569_RecordsaddBy.resx">
-      <DependentUpon>201703251605569_RecordsaddBy.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201703292337199_removingtable.resx">
+      <DependentUpon>201703292337199_removingtable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703300046178_foundadateinUTC is nullable.resx">
+      <DependentUpon>201703300046178_foundadateinUTC is nullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703300058438_norequired for lostdatetime.resx">
+      <DependentUpon>201703300058438_norequired for lostdatetime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

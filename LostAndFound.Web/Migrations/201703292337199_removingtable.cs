@@ -3,7 +3,7 @@ namespace LostAndFound.Web.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class RecordsaddBy : DbMigration
+    public partial class removingtable : DbMigration
     {
         public override void Up()
         {
@@ -32,33 +32,27 @@ namespace LostAndFound.Web.Migrations
                         Email = c.String(nullable: false, maxLength: 100),
                         Phone = c.String(),
                         LostDateTimeUTC = c.DateTime(nullable: false),
+                        Approved = c.Boolean(nullable: false),
+                        FoundDateInUtc = c.DateTime(nullable: false),
                         IPAdress = c.String(nullable: false),
                         Active = c.Boolean(nullable: false),
                         DateCreatedUTC = c.DateTime(nullable: false),
                         Notes = c.String(maxLength: 1024),
+                        ReasonCaseClosed = c.String(maxLength: 2048),
+                        CaseClosedBy_Id = c.Guid(),
                         LostItemType_TypeOfItemId = c.Guid(nullable: false),
                         LostLocation_LocationId = c.Guid(),
                         RecordEnteredBy_Id = c.Guid(),
                     })
                 .PrimaryKey(t => t.LostReportItemId)
+                .ForeignKey("dbo.AspNetUsers", t => t.CaseClosedBy_Id)
                 .ForeignKey("dbo.TypeOfItems", t => t.LostItemType_TypeOfItemId, cascadeDelete: true)
                 .ForeignKey("dbo.Locations", t => t.LostLocation_LocationId)
                 .ForeignKey("dbo.AspNetUsers", t => t.RecordEnteredBy_Id)
+                .Index(t => t.CaseClosedBy_Id)
                 .Index(t => t.LostItemType_TypeOfItemId)
                 .Index(t => t.LostLocation_LocationId)
                 .Index(t => t.RecordEnteredBy_Id);
-            
-            CreateTable(
-                "dbo.TypeOfItems",
-                c => new
-                    {
-                        TypeOfItemId = c.Guid(nullable: false, identity: true),
-                        Name = c.String(nullable: false, maxLength: 100),
-                        Active = c.Boolean(nullable: false),
-                        DateCreatedUTC = c.DateTime(nullable: false),
-                        Notes = c.String(maxLength: 1024),
-                    })
-                .PrimaryKey(t => t.TypeOfItemId);
             
             CreateTable(
                 "dbo.AspNetUsers",
@@ -126,31 +120,16 @@ namespace LostAndFound.Web.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
-                "dbo.LostItems",
+                "dbo.TypeOfItems",
                 c => new
                     {
-                        LostItemId = c.Guid(nullable: false, identity: true),
+                        TypeOfItemId = c.Guid(nullable: false, identity: true),
+                        Name = c.String(nullable: false, maxLength: 100),
                         Active = c.Boolean(nullable: false),
                         DateCreatedUTC = c.DateTime(nullable: false),
-                        Notes = c.String(maxLength: 1000),
-                        Name = c.String(nullable: false, maxLength: 100),
-                        Description = c.String(maxLength: 2048),
-                        FoundDateInUtc = c.DateTime(nullable: false),
-                        ReasonCaseClosed = c.String(maxLength: 2048),
-                        CaseClosedBy_Id = c.Guid(),
-                        FoundLocation_LocationId = c.Guid(nullable: false),
-                        LostItemType_TypeOfItemId = c.Guid(nullable: false),
-                        RecordEnteredBy_Id = c.Guid(),
+                        Notes = c.String(maxLength: 1024),
                     })
-                .PrimaryKey(t => t.LostItemId)
-                .ForeignKey("dbo.AspNetUsers", t => t.CaseClosedBy_Id)
-                .ForeignKey("dbo.Locations", t => t.FoundLocation_LocationId, cascadeDelete: true)
-                .ForeignKey("dbo.TypeOfItems", t => t.LostItemType_TypeOfItemId, cascadeDelete: true)
-                .ForeignKey("dbo.AspNetUsers", t => t.RecordEnteredBy_Id)
-                .Index(t => t.CaseClosedBy_Id)
-                .Index(t => t.FoundLocation_LocationId)
-                .Index(t => t.LostItemType_TypeOfItemId)
-                .Index(t => t.RecordEnteredBy_Id);
+                .PrimaryKey(t => t.TypeOfItemId);
             
             CreateTable(
                 "dbo.AspNetRoles",
@@ -167,22 +146,15 @@ namespace LostAndFound.Web.Migrations
         public override void Down()
         {
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
-            DropForeignKey("dbo.LostItems", "RecordEnteredBy_Id", "dbo.AspNetUsers");
-            DropForeignKey("dbo.LostItems", "LostItemType_TypeOfItemId", "dbo.TypeOfItems");
-            DropForeignKey("dbo.LostItems", "FoundLocation_LocationId", "dbo.Locations");
-            DropForeignKey("dbo.LostItems", "CaseClosedBy_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.LostItemReports", "RecordEnteredBy_Id", "dbo.AspNetUsers");
+            DropForeignKey("dbo.LostItemReports", "LostLocation_LocationId", "dbo.Locations");
+            DropForeignKey("dbo.LostItemReports", "LostItemType_TypeOfItemId", "dbo.TypeOfItems");
+            DropForeignKey("dbo.LostItemReports", "CaseClosedBy_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUsers", "CreatedBy_Id", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
-            DropForeignKey("dbo.LostItemReports", "LostLocation_LocationId", "dbo.Locations");
-            DropForeignKey("dbo.LostItemReports", "LostItemType_TypeOfItemId", "dbo.TypeOfItems");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
-            DropIndex("dbo.LostItems", new[] { "RecordEnteredBy_Id" });
-            DropIndex("dbo.LostItems", new[] { "LostItemType_TypeOfItemId" });
-            DropIndex("dbo.LostItems", new[] { "FoundLocation_LocationId" });
-            DropIndex("dbo.LostItems", new[] { "CaseClosedBy_Id" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
@@ -192,13 +164,13 @@ namespace LostAndFound.Web.Migrations
             DropIndex("dbo.LostItemReports", new[] { "RecordEnteredBy_Id" });
             DropIndex("dbo.LostItemReports", new[] { "LostLocation_LocationId" });
             DropIndex("dbo.LostItemReports", new[] { "LostItemType_TypeOfItemId" });
+            DropIndex("dbo.LostItemReports", new[] { "CaseClosedBy_Id" });
             DropTable("dbo.AspNetRoles");
-            DropTable("dbo.LostItems");
+            DropTable("dbo.TypeOfItems");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
-            DropTable("dbo.TypeOfItems");
             DropTable("dbo.LostItemReports");
             DropTable("dbo.Locations");
         }

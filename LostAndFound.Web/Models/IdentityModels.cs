@@ -13,7 +13,6 @@ namespace LostAndFound.Web.Models
     public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, AppUserLogin, AppUserRole, AppUserClaim>
     {
         public DbSet<Location> Locations { get; set; }
-        public DbSet<LostItem> LostItems { get; set; }
         public DbSet<LostItemReport> LostItemReports { get; set; }
         public DbSet<TypeOfItem> TypeOfItems { get; set; }
 

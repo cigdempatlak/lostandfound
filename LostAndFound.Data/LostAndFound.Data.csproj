@@ -59,7 +59,6 @@
   <ItemGroup>
     <Compile Include="Entities\AppUser.cs" />
     <Compile Include="Entities\Location.cs" />
-    <Compile Include="Entities\LostItem.cs" />
     <Compile Include="Entities\LostItemReport.cs" />
     <Compile Include="Entities\TypeOfItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

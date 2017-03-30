@@ -41,10 +41,14 @@ namespace LostAndFound.Data.Entities
         public string Email { get; set; }
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
+
         public DateTime LostDateTimeUTC { get; set; }
 
         public AppUser RecordEnteredBy { get; set; }
 
+        public bool Approved { get; set; }
+
+        public DateTime? FoundDateInUtc { get; set; }
 
 
         [Required]
@@ -57,11 +61,19 @@ namespace LostAndFound.Data.Entities
         [MaxLength(1024)]
         public string Notes { get; set; }
 
+        [MaxLength(2048)]
+        public string ReasonCaseClosed { get; set; }
+
+        public AppUser CaseClosedBy { get; set; }
+
         public LostItemReport()
         {
+            //when case is closed, active should be set to false
             Active = true;
             DateCreatedUTC = DateTime.UtcNow;
             LostDateTimeUTC = DateTime.UtcNow;
+            //for now we approve any posted item; later on we may change this
+            Approved = true;
         }
     }
 }

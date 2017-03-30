@@ -11,7 +11,7 @@ namespace LostAndFound.Web.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(LostAndFound.Web.Models.AppDbContext context)
@@ -28,7 +28,6 @@ namespace LostAndFound.Web.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-
             #region Item Types
             TypeOfItem atm = new TypeOfItem { Name = "ATM/Debit Card", TypeOfItemId = Guid.NewGuid() };
             context.TypeOfItems.Add(atm);
@@ -152,7 +151,7 @@ namespace LostAndFound.Web.Migrations
             adminRole.Id = Guid.NewGuid();
             adminRole.Name = "Administrator";
             context.Roles.Add(adminRole);
-            
+
             AppUser sysAdmin = new AppUser();
             sysAdmin.Id = Guid.NewGuid();
             sysAdmin.FirstName = "System";
@@ -177,7 +176,7 @@ namespace LostAndFound.Web.Migrations
             #endregion
 
             #region locations
-            Location locA = new Location() { Active = true, DateCreatedUTC = DateTime.UtcNow,  Name = "Building A" ,LocationId = Guid.NewGuid()};
+            Location locA = new Location() { Active = true, DateCreatedUTC = DateTime.UtcNow, Name = "Building A", LocationId = Guid.NewGuid() };
             Location locB = new Location() { Active = true, DateCreatedUTC = DateTime.UtcNow, Name = "Building B", LocationId = Guid.NewGuid() };
             Location locC = new Location() { Active = true, DateCreatedUTC = DateTime.UtcNow, Name = "Building C", LocationId = Guid.NewGuid() };
             Location locD = new Location() { Active = true, DateCreatedUTC = DateTime.UtcNow, Name = "Building D", LocationId = Guid.NewGuid() };
@@ -194,6 +193,7 @@ namespace LostAndFound.Web.Migrations
             context.Locations.Add(locG);
             context.Locations.Add(locH);
             #endregion
+
         }
     }
 }
