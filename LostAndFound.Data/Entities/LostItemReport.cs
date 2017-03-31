@@ -50,6 +50,13 @@ namespace LostAndFound.Data.Entities
 
         public DateTime? FoundDateInUtc { get; set; }
 
+        [MaxLength(100)]
+        public string ClaimerFirstName { get; set; }
+        [MaxLength(100)]
+        public string ClaimerLastName { get; set; }
+        [MaxLength(100)]
+        [DataType(DataType.EmailAddress)]
+        public string ClaimerEmail { get; set; }
 
         [Required]
         public string IPAdress { get; set; }
@@ -64,6 +71,8 @@ namespace LostAndFound.Data.Entities
         [MaxLength(2048)]
         public string ReasonCaseClosed { get; set; }
 
+        
+        public DateTime CaseClosedDateUTC { get; set; }
         public AppUser CaseClosedBy { get; set; }
 
         public LostItemReport()

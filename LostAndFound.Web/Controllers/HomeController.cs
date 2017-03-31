@@ -26,18 +26,12 @@ namespace LostAndFound.Web.Controllers
                                 ItemType = li.LostItemType.Name,
                                 Location = li.LostLocation.Name
                             }
-                            ).ToList();
+                            ).OrderByDescending(c => c.DateLost).ToList();
             return View(vm);
         }
 
       
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
+       
         public ActionResult ReportLostItem()
         {
             LostItemReportVM vm = new LostItemReportVM();
@@ -95,6 +89,91 @@ namespace LostAndFound.Web.Controllers
                 Debug.WriteLine(ex.Message);
             }
             return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Claim()
+        {
+            AppDbContext db = new AppDbContext();
+
+            ListLostReportItemVM vm = new ListLostReportItemVM();
+
+            vm.LostItems = (from li in db.LostItemReports
+                             where li.Active == true && li.Approved == true
+                             orderby li.LostDateTimeUTC descending
+                             select new LostItem
+                             {
+                                 DateLost = li.LostDateTimeUTC,
+                                 ItemName = li.ItemName,
+                                 ItemType = li.LostItemType.Name,
+                                 Location = li.LostLocation.Name,
+                                 ItemId = li.LostReportItemId
+                             }
+                            ).ToList();
+
+            return View(vm);
+            
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Claim(ListLostReportItemVM vm)
+        {
+            AppDbContext db = new AppDbContext();
+
+           
+            vm.LostItems = (from li in db.LostItemReports
+                            where li.Active == vm.SearchActiveOnly && li.Approved == true && (String.IsNullOrEmpty(vm.SearchItemName) || li.ItemName.Contains(vm.SearchItemName))
+                            orderby li.LostDateTimeUTC descending
+                            select new LostItem
+                            {
+                                DateLost = li.LostDateTimeUTC,
+                                ItemName = li.ItemName,
+                                ItemType = li.LostItemType.Name,
+                                Location = li.LostLocation.Name,
+                                ItemId = li.LostReportItemId
+                            }
+                            ).ToList();
+
+            return View(vm);
+
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult EditCase(Guid itemId)
+        {
+            AppDbContext db = new AppDbContext();
+
+            LostItemReport lir = db.LostItemReports.Single(c => c.LostReportItemId == itemId);
+
+            CloseCaseVM vm = new CloseCaseVM();
+            vm.Active = lir.Active;
+            vm.Approved = lir.Approved;
+            vm.CaseClosedBy = db.Users.Single(c => c.Email == this.User.Identity.Name);
+            vm.DateCreated = lir.DateCreatedUTC.ToLocalTime();
+            vm.Description = lir.Description;
+            vm.Email = lir.Email;
+            vm.FirstName = lir.Email;
+            vm.IPAdress = lir.IPAdress;
+            vm.ItemName = lir.ItemName;
+            vm.LastName = lir.LastName;
+            vm.LostDateTime = lir.LostDateTimeUTC.ToLocalTime();
+            vm.LostItemType = lir.LostItemType.Name;
+            vm.LostLocation = lir.LostLocation.Name;
+            vm.Notes = lir.Notes;
+            vm.Phone = lir.Phone;
+            vm.ReasonCaseClosed = lir.ReasonCaseClosed;
+            vm.RecordEnteredBy = lir.RecordEnteredBy;
+            if (lir.FoundDateInUtc.HasValue)
+                vm.FoundDate = lir.FoundDateInUtc.Value.ToLocalTime();
+            vm.ClaimerEmail = lir.ClaimerEmail;
+            vm.ClaimerFirstName = lir.ClaimerFirstName;
+            vm.ClaimerLastName = lir.ClaimerLastName;
+            vm.CaseClosedDate = lir.CaseClosedDateUTC.ToLocalTime();
+
+            return View(vm);
         }
     }
 }

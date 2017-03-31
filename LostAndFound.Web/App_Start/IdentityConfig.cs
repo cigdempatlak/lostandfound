@@ -71,7 +71,7 @@ namespace LostAndFound.Web
             if (dataProtectionProvider != null)
             {
                 manager.UserTokenProvider = 
-                    new DataProtectorTokenProvider<AppUser,Guid>(dataProtectionProvider.Create("Lost And FOund"));
+                    new DataProtectorTokenProvider<AppUser,Guid>(dataProtectionProvider.Create("Lost And Found"));
             }
             return manager;
         }
@@ -86,7 +86,7 @@ namespace LostAndFound.Web
 
         public override Task<ClaimsIdentity> CreateUserIdentityAsync(AppUser user)
         {
-            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager,"Forms");
+            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager,DefaultAuthenticationTypes.ApplicationCookie);
         }
 
         public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)

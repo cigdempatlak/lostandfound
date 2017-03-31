@@ -29,14 +29,25 @@ namespace LostAndFound.Web
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Account/Login"),
-               
-            });            
-            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+                CookieName = "LostAndFoundWebApp",
+                CookiePath = "/",
+                ExpireTimeSpan = TimeSpan.FromHours(1),
+                SlidingExpiration = true,
+                Provider = new CookieAuthenticationProvider
+                {
+                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, AppUser, Guid>(
+                    validateInterval: TimeSpan.FromMinutes(120),
+                   regenerateIdentityCallback:(manager,user)=>(user.GenerateUserIdentityAsync(manager,DefaultAuthenticationTypes.ApplicationCookie)),
+                   getUserIdCallback: (user) => Guid.Parse(user.GetUserId()))
 
-            // Enables the application to temporarily store user information when they are verifying the second factor in the two-factor authentication process.
-            app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
+                },
+                AuthenticationMode =Microsoft.Owin.Security.AuthenticationMode.Active,
+                
 
-     
+            });
+
+            
+
         }
     }
 }

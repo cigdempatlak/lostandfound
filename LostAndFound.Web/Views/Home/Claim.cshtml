@@ -1,0 +1,62 @@
+﻿@model LostAndFound.Web.Models.ListLostReportItemVM
+    @{
+        ViewBag.Title = "Lost And Found - Claim";
+    }
+
+    <h2>Claim items and close cases</h2>
+@using (Html.BeginForm("Claim", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.LabelFor(m=>m.SearchItemName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.SearchItemName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.SearchActiveOnly, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.SearchActiveOnly, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Submit" />
+        </div>
+    </div>
+}
+<div class="table-responsive">
+<table class="table table-bordered table-condensed table-striped table-hover sortable">
+    @if (Model.LostItems.Count() == 0)
+    {
+        <tr>
+            <td colspan="10">No Record's found.</td>
+        </tr>
+    }
+    else
+    {
+        <thead>
+            <tr class="danger">
+                <th data-defaultsign="month">Date Lost</th>
+                <th data-defaultsign="AZ">Item Type</th>
+                <th data-defaultsign="AZ">Item Name</th>
+                <th data-defaultsign="AZ">Location</th>
+                <th>Close Case</th>
+            </tr>
+        </thead>
+        foreach (var item in Model.LostItems)
+        {
+            <tr>
+                <td>@item.DateLost.ToShortDateString()</td>
+                <td>@item.ItemType</td>
+                <td>@item.ItemName</td>
+                <td>@item.Location</td>
+                <td><a href='@Url.Action("EditCase","Home",new { itemID = item.ItemId })'>
+                        <img src="~/Images/claim.png"  title="Edit/Close Case @item.ItemName"/>
+                    </a></td>
+            </tr>
+            }
+        }
+</table>
+</div>  
