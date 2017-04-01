@@ -22,3 +22,7 @@ select,
 textarea {
     max-width: 280px;
 }
+
+#editcaseform {
+    border:dotted 1px solid black;
+}

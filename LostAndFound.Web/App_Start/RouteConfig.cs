@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.Mvc.Routing.Constraints;
 
 namespace LostAndFound.Web
 {
@@ -16,8 +17,13 @@ namespace LostAndFound.Web
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "ReportLostItem", id = UrlParameter.Optional }
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute("EditCase",
+                url: "{controler}/{action}/{itemid}",
+                defaults: new { controller = "Home", action = "EditCase" },
+                constraints: new { itemid = new GuidRouteConstraint() });
         }
     }
 }

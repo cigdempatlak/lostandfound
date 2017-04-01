@@ -47,6 +47,11 @@ namespace LostAndFound.Data.Entities
             IsActive = true;
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", FirstName, LastName);
+        }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<AppUser, Guid> manager, string authenticationType)
         {
             var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);

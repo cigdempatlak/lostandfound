@@ -24,7 +24,8 @@ namespace LostAndFound.Web
                       "~/Scripts/bootstrap-datepicker.js",
                       "~/Scripts/moment.min.js",
                       "~/Scripts/bootstrap-sortable.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/respond.js",
+                      "~/Scripts/moment-datepicker.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",

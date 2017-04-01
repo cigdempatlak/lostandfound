@@ -142,23 +142,94 @@ namespace LostAndFound.Web.Controllers
 
         [Authorize]
         [HttpGet]
-        public ActionResult EditCase(Guid itemId)
+        public ActionResult EditCase(Guid? itemId)
+        {
+            if (itemId == null)
+                return RedirectToAction("Index");
+
+            AppDbContext db = new AppDbContext();
+
+            LostItemReport lir = db.LostItemReports.Include("LostLocation").Include("LostItemType").Single(c => c.LostReportItemId == itemId);
+
+            CloseCaseVM vm = MapToCloseCaseVM(lir);
+
+            if (lir.Active == false)
+                return View("CaseClosed", vm);
+
+            return View(vm);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult EditCase(Guid itemId,CloseCaseVM vm, DateTime? FoundDate, string Notes, string ReasonCaseClosed,
+            string ClaimerFirstName, string ClaimerLastName,string ClaimerEmail,DateTime? CaseClosedDate, bool KeepCaseOpen)
         {
             AppDbContext db = new AppDbContext();
 
-            LostItemReport lir = db.LostItemReports.Single(c => c.LostReportItemId == itemId);
+            AppUser user = db.Users.Single(c => c.Email == this.User.Identity.Name);
+            LostItemReport lir = db.LostItemReports.Include("LostLocation").Include("LostItemType").Single(c => c.LostReportItemId == itemId);
 
+            vm = MapToCloseCaseVM(lir);
+            if (lir.Active == false)
+                return View("CaseClosed", vm);
+
+            if (FoundDate.HasValue)
+                vm.FoundDate = FoundDate.Value;
+            vm.Notes = Notes;
+            vm.ReasonCaseClosed = ReasonCaseClosed;
+            vm.ClaimerFirstName = ClaimerFirstName;
+            vm.ClaimerLastName = ClaimerLastName;
+            vm.ClaimerEmail = ClaimerEmail;
+         
+            if (KeepCaseOpen == false)
+            {
+                vm.CaseClosedBy = user;
+                
+                if (!TryUpdateModel(vm))
+                {
+                    return View(vm);
+                }
+
+                lir.CaseClosedBy = user;
+                lir.Active = false;              
+            }
+            
+
+            lir.Notes = vm.Notes;
+            lir.ReasonCaseClosed = vm.ReasonCaseClosed;
+            lir.ClaimerFirstName = vm.ClaimerFirstName;
+            lir.ClaimerLastName = vm.ClaimerLastName;
+            lir.ClaimerEmail = vm.ClaimerEmail;
+            if (FoundDate.HasValue)
+                lir.FoundDateInUtc = FoundDate.Value.ToUniversalTime();
+            if (CaseClosedDate.HasValue)
+                lir.CaseClosedDateUTC = CaseClosedDate.Value.ToUniversalTime();
+         
+
+
+            db.SaveChanges();
+
+            if (lir.Active == false)
+                return View("CaseClosed", vm);
+
+            TempData["message"] = "Case is updated.";
+            return RedirectToAction("EditCase", new { itemId = itemId });
+        }
+
+        private CloseCaseVM MapToCloseCaseVM(LostItemReport lir)
+        {
             CloseCaseVM vm = new CloseCaseVM();
-            vm.Active = lir.Active;
-            vm.Approved = lir.Approved;
-            vm.CaseClosedBy = db.Users.Single(c => c.Email == this.User.Identity.Name);
+            vm.Active = lir.Active == true ? "Active" : "Closed";
+            if (lir.FoundDateInUtc.HasValue)
+                vm.FoundDate = lir.FoundDateInUtc.Value.ToLocalTime();
+            vm.KeepCaseOpen = lir.Active;
+            vm.Approved = lir.Approved == true ? "Approved" : "Not Approved";
             vm.DateCreated = lir.DateCreatedUTC.ToLocalTime();
             vm.Description = lir.Description;
             vm.Email = lir.Email;
-            vm.FirstName = lir.Email;
+            vm.Name = string.Format("{0} {1}", lir.FirstName, lir.LastName);
             vm.IPAdress = lir.IPAdress;
             vm.ItemName = lir.ItemName;
-            vm.LastName = lir.LastName;
             vm.LostDateTime = lir.LostDateTimeUTC.ToLocalTime();
             vm.LostItemType = lir.LostItemType.Name;
             vm.LostLocation = lir.LostLocation.Name;
@@ -171,9 +242,8 @@ namespace LostAndFound.Web.Controllers
             vm.ClaimerEmail = lir.ClaimerEmail;
             vm.ClaimerFirstName = lir.ClaimerFirstName;
             vm.ClaimerLastName = lir.ClaimerLastName;
-            vm.CaseClosedDate = lir.CaseClosedDateUTC.ToLocalTime();
-
-            return View(vm);
+          
+            return vm;
         }
     }
 }

@@ -72,7 +72,7 @@ namespace LostAndFound.Data.Entities
         public string ReasonCaseClosed { get; set; }
 
         
-        public DateTime CaseClosedDateUTC { get; set; }
+        public DateTime? CaseClosedDateUTC { get; set; }
         public AppUser CaseClosedBy { get; set; }
 
         public LostItemReport()
